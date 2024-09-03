@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OwnerHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MS-Usuarios</a> &gt; <a href="index.source.html" class="el_package">org.restaurante.msusuarios.application.handler</a> &gt; <span class="el_source">OwnerHandler.java</span></div><h1>OwnerHandler.java</h1><pre class="source lang-java linenums">package org.restaurante.msusuarios.application.handler;
+
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.restaurante.msusuarios.application.dto.request.EmployeeRequestDto;
+import org.restaurante.msusuarios.application.dto.response.EmployeeResponseDto;
+import org.restaurante.msusuarios.application.handler.interfaces.IOwnerHandler;
+import org.restaurante.msusuarios.application.mapper.request.EmployeeRequestMapper;
+import org.restaurante.msusuarios.application.mapper.response.EmployeeResponseMapper;
+import org.restaurante.msusuarios.domain.api.IOwnerServicePort;
+import org.springframework.stereotype.Service;
+
+<span class="fc" id="L13">@RequiredArgsConstructor</span>
+@Service
+@Transactional
+public class OwnerHandler implements IOwnerHandler {
+
+    private final IOwnerServicePort ownerServicePort;
+    private final EmployeeRequestMapper employeeRequestMapper;
+    private final EmployeeResponseMapper employeeResponseMapper;
+
+    @Override
+    public void saveEmployee(EmployeeRequestDto employeeRequestDto) {
+<span class="nc" id="L24">        ownerServicePort.saveEmployee(employeeRequestMapper.toUserModel(employeeRequestDto));</span>
+<span class="nc" id="L25">    }</span>
+
+    @Override
+    public EmployeeResponseDto getEmployee(String email) {
+<span class="nc" id="L29">        return employeeResponseMapper.toEmployeeResponseDto(ownerServicePort.getEmployee(email));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

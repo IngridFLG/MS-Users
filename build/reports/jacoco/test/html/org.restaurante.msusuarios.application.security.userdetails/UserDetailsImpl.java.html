@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserDetailsImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MS-Usuarios</a> &gt; <a href="index.source.html" class="el_package">org.restaurante.msusuarios.application.security.userdetails</a> &gt; <span class="el_source">UserDetailsImpl.java</span></div><h1>UserDetailsImpl.java</h1><pre class="source lang-java linenums">package org.restaurante.msusuarios.application.security.userdetails;
+
+import org.restaurante.msusuarios.application.dto.request.AuthRequestDto;
+import org.restaurante.msusuarios.application.dto.response.AuthResponseDto;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.restaurante.msusuarios.application.security.util.JwtUtil;
+import org.restaurante.msusuarios.infrastructure.jpa.entity.UserEntity;
+import org.restaurante.msusuarios.infrastructure.jpa.repository.IUserRepository;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+@Service
+public class UserDetailsImpl implements UserDetailsService {
+
+
+    private final JwtUtil jwtUtil;
+    private final PasswordEncoder passwordEncoder;
+    private final IUserRepository userRepository;
+
+<span class="fc" id="L31">    public UserDetailsImpl(JwtUtil jwtUtil, PasswordEncoder passwordEncoder, IUserRepository userRepository) {</span>
+<span class="fc" id="L32">        this.jwtUtil = jwtUtil;</span>
+<span class="fc" id="L33">        this.passwordEncoder = passwordEncoder;</span>
+<span class="fc" id="L34">        this.userRepository = userRepository;</span>
+<span class="fc" id="L35">    }</span>
+
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+<span class="nc" id="L39">        UserEntity userEntity = userRepository.findUserEntityByEmail(username)</span>
+<span class="nc" id="L40">                .orElseThrow(() -&gt; new UsernameNotFoundException(&quot;The user &quot; + username + &quot; no exist.&quot;));</span>
+
+<span class="nc" id="L42">        List&lt;SimpleGrantedAuthority&gt; authorityList = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L43">        authorityList.add(new SimpleGrantedAuthority(&quot;ROLE_&quot; + userEntity.getRoleId()));</span>
+<span class="nc" id="L44">        return new CustomUserDetails(</span>
+<span class="nc" id="L45">                userEntity.getId(),</span>
+<span class="nc" id="L46">                userEntity.getEmail(),</span>
+<span class="nc" id="L47">                userEntity.getPassword(),</span>
+                authorityList
+        );
+    }
+
+    public AuthResponseDto loginUser(AuthRequestDto authRequestDto) {
+<span class="nc" id="L53">        String email = authRequestDto.getEmail();</span>
+<span class="nc" id="L54">        String password = authRequestDto.getPassword();</span>
+
+<span class="nc" id="L56">        Authentication authentication = this.authenticate(email, password);</span>
+<span class="nc" id="L57">        SecurityContextHolder.getContext().setAuthentication(authentication);</span>
+
+<span class="nc" id="L59">        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();</span>
+<span class="nc" id="L60">        Long userId = userDetails.getId();</span>
+
+<span class="nc" id="L62">        String accessToken = jwtUtil.createToken(authentication, userId);</span>
+<span class="nc" id="L63">        return new AuthResponseDto(accessToken);</span>
+    }
+
+    public Authentication authenticate(String username, String password) {
+<span class="nc" id="L67">        UserDetails userDetails = this.loadUserByUsername(username);</span>
+
+<span class="nc bnc" id="L69" title="All 2 branches missed.">        if (userDetails == null) {</span>
+<span class="nc" id="L70">            throw new BadCredentialsException(&quot;Usuario o contraseÃ±a invalidos&quot;);</span>
+        }
+
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        if (!passwordEncoder.matches(password, userDetails.getPassword())) {</span>
+<span class="nc" id="L74">            throw new BadCredentialsException(&quot;Incorrect Password&quot;);</span>
+        }
+
+<span class="nc" id="L77">        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

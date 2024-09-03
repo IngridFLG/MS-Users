@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserJpaAdapter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MS-Usuarios</a> &gt; <a href="index.source.html" class="el_package">org.restaurante.msusuarios.infrastructure.jpa.adapter</a> &gt; <span class="el_source">UserJpaAdapter.java</span></div><h1>UserJpaAdapter.java</h1><pre class="source lang-java linenums">package org.restaurante.msusuarios.infrastructure.jpa.adapter;
+
+
+import org.restaurante.msusuarios.domain.model.UserModel;
+import org.restaurante.msusuarios.domain.spi.IUserPersistencePort;
+import org.restaurante.msusuarios.infrastructure.jpa.entity.UserEntity;
+import org.restaurante.msusuarios.infrastructure.jpa.exception.ExistsEmailException;
+import org.restaurante.msusuarios.infrastructure.jpa.exception.ExistsUserException;
+import org.restaurante.msusuarios.infrastructure.jpa.exception.UserNotFoundException;
+import org.restaurante.msusuarios.infrastructure.jpa.mapper.UserEntityMapper;
+import org.restaurante.msusuarios.infrastructure.jpa.repository.IUserRepository;
+
+import lombok.RequiredArgsConstructor;
+
+import java.util.Optional;
+
+import static org.restaurante.msusuarios.infrastructure.configuration.Constants.EMPLOYEE_ROLE_ID;
+
+<span class="fc" id="L19">@RequiredArgsConstructor</span>
+public class UserJpaAdapter implements IUserPersistencePort{
+
+    private final UserEntityMapper userEntityMapper;
+
+    private final IUserRepository userRepository;
+
+    @Override
+    public void createUser(UserModel user) {
+<span class="nc bnc" id="L28" title="All 2 branches missed.">        if(userRepository.findUserEntityByEmail(user.getEmail()).isPresent()) {</span>
+<span class="nc" id="L29">            throw new ExistsEmailException();</span>
+        }
+
+<span class="nc bnc" id="L32" title="All 2 branches missed.">        if(userRepository.findUserEntityByDni(user.getDni()).isPresent()) {</span>
+<span class="nc" id="L33">            throw new ExistsUserException();</span>
+        }
+<span class="nc" id="L35">        userRepository.save(userEntityMapper.toUserEntity(user));</span>
+<span class="nc" id="L36">    }</span>
+
+    @Override
+    public UserModel getUser(Long id, Long roleId) {
+<span class="nc" id="L40">        Optional&lt;UserEntity&gt; userEntityOptional = userRepository.findUserEntityByIdAndRoleId(id, roleId);</span>
+<span class="nc bnc" id="L41" title="All 2 branches missed.">        if(userEntityOptional.isEmpty()) {</span>
+<span class="nc" id="L42">            throw new UserNotFoundException(&quot;The user &quot; + id + &quot; does not exist&quot;);</span>
+        }
+<span class="nc" id="L44">        return userEntityMapper.toUserModel(userEntityOptional.get());</span>
+    }
+
+    @Override
+    public UserModel getEmployee(String email) {
+<span class="nc" id="L49">        Optional&lt;UserEntity&gt; userEntityOptional = userRepository.findUserEntityByEmailAndRoleId(email, EMPLOYEE_ROLE_ID);</span>
+<span class="nc bnc" id="L50" title="All 2 branches missed.">        if(userEntityOptional.isEmpty()) {</span>
+<span class="nc" id="L51">            throw new UserNotFoundException(&quot;The employee doesn't exist&quot;);</span>
+        }
+
+<span class="nc" id="L54">        return userEntityMapper.toUserModel(userEntityOptional.get());</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

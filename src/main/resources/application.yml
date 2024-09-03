@@ -1,0 +1,24 @@
+# Conversion to YAML from Properties format
+# Warnings:
+# - The yaml file had comments which are lost in the refactoring!
+server:
+  port: 8090
+spring:
+  application:
+    name: MS-Usuarios
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/ms_usuarios
+    username: root
+    password: 1234
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+  security:
+    jwt:
+      key:
+        private: 9c9c48d57077710e8a8ec4a72f0c959fa11ea2c2e1073b7c7d39b4eefff5ddf8
+    user:
+      generator: AUTH0JWT-BACKEND

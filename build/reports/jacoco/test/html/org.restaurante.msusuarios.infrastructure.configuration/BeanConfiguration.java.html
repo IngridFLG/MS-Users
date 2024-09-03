@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BeanConfiguration.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">MS-Usuarios</a> &gt; <a href="index.source.html" class="el_package">org.restaurante.msusuarios.infrastructure.configuration</a> &gt; <span class="el_source">BeanConfiguration.java</span></div><h1>BeanConfiguration.java</h1><pre class="source lang-java linenums">package org.restaurante.msusuarios.infrastructure.configuration;
+
+import org.restaurante.msusuarios.domain.api.IAdminServicePort;
+import org.restaurante.msusuarios.domain.api.IClientServicePort;
+import org.restaurante.msusuarios.domain.api.IOwnerServicePort;
+import org.restaurante.msusuarios.domain.api.IPasswordEncodedServicePort;
+import org.restaurante.msusuarios.domain.spi.IRolePersistencePort;
+import org.restaurante.msusuarios.domain.spi.IUserPersistencePort;
+import org.restaurante.msusuarios.domain.usecase.AdminUseCase;
+import org.restaurante.msusuarios.domain.usecase.ClientUseCase;
+import org.restaurante.msusuarios.domain.usecase.OwnerUseCase;
+import org.restaurante.msusuarios.infrastructure.jpa.adapter.RoleJpaAdapter;
+import org.restaurante.msusuarios.infrastructure.jpa.adapter.UserJpaAdapter;
+import org.restaurante.msusuarios.infrastructure.jpa.mapper.RoleEntityMapper;
+import org.restaurante.msusuarios.infrastructure.jpa.mapper.UserEntityMapper;
+import org.restaurante.msusuarios.infrastructure.jpa.repository.IRoleRepository;
+import org.restaurante.msusuarios.infrastructure.jpa.repository.IUserRepository;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+@Configuration
+<span class="fc" id="L26">@RequiredArgsConstructor</span>
+public class BeanConfiguration {
+    
+    private final IUserRepository userRepository;
+    private final UserEntityMapper userEntityMapper;
+    private final IRoleRepository roleRepository;
+    private final RoleEntityMapper roleEntityMapper;
+
+    @Bean
+    public PasswordEncoder encoder() {
+<span class="fc" id="L36">        return new BCryptPasswordEncoder();</span>
+    }
+
+    @Bean
+    public IPasswordEncodedServicePort authPasswordEncoderPort() {
+<span class="fc" id="L41">        return new AuthBcryptAdapter(encoder());</span>
+    }
+
+    @Bean
+    public IUserPersistencePort userPersistencePort() {
+<span class="fc" id="L46">        return new UserJpaAdapter(userEntityMapper, userRepository);</span>
+    }
+
+    @Bean
+    public IRolePersistencePort rolePersistencePort() {
+<span class="fc" id="L51">        return new RoleJpaAdapter(roleEntityMapper, roleRepository);</span>
+    }
+
+     @Bean
+     public IAdminServicePort adminServicePort() {
+<span class="fc" id="L56">         return new AdminUseCase(userPersistencePort(), rolePersistencePort(), authPasswordEncoderPort());</span>
+     }
+
+    @Bean
+    public IOwnerServicePort ownerServicePort() {
+<span class="fc" id="L61">        return new OwnerUseCase(userPersistencePort(), rolePersistencePort(), authPasswordEncoderPort());</span>
+    }
+
+    @Bean
+    public IClientServicePort clientServicePort() {
+<span class="fc" id="L66">        return new ClientUseCase(userPersistencePort(), rolePersistencePort(), authPasswordEncoderPort());</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

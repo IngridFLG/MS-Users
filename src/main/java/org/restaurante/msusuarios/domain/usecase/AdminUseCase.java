@@ -7,6 +7,8 @@ import org.restaurante.msusuarios.domain.spi.IRolePersistencePort;
 import org.restaurante.msusuarios.domain.spi.IUserPersistencePort;
 import org.restaurante.msusuarios.domain.validate.UserValidate;
 
+import static org.restaurante.msusuarios.domain.util.Constants.OWNER;
+
 
 public class AdminUseCase implements IAdminServicePort {
 
@@ -26,7 +28,7 @@ public class AdminUseCase implements IAdminServicePort {
             throw new IsOlderUserException();
         }
 
-        user.setRoleId(rolePersistencePort.getRole("OWNER").getId());
+        user.setRoleId(rolePersistencePort.getRole(OWNER).getId());
         user.setPassword(passwordEncodedServicePort.encryptPassword(user.getPassword()));
 
         userPersistencePort.createUser(user);
@@ -34,6 +36,6 @@ public class AdminUseCase implements IAdminServicePort {
 
     @Override
     public UserModel getOwner(Long id) {
-        return userPersistencePort.getUser(id, rolePersistencePort.getRole("OWNER").getId());
+        return userPersistencePort.getUser(id, rolePersistencePort.getRole(OWNER).getId());
     }
 }

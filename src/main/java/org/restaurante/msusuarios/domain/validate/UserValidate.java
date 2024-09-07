@@ -8,6 +8,8 @@ import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
 
+import static org.restaurante.msusuarios.domain.util.Constants.MIN_VALUE_AGE;
+
 public class UserValidate {
 
     public static boolean isOlder(UserModel user) {
@@ -17,7 +19,7 @@ public class UserValidate {
             LocalDate now = LocalDate.now();
             Period period = Period.between(birthDate, now);
             int age = period.getYears();
-            return age >= 18;
+            return age >= MIN_VALUE_AGE;
         } catch (DateTimeParseException e) {
             return false;
         }

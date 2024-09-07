@@ -7,5 +7,4 @@ public interface IAdminServicePort {
     void saveOwner(UserModel user);
 
     UserModel getOwner(Long id);
-
 }

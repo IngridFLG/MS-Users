@@ -6,6 +6,8 @@ import org.restaurante.msusuarios.domain.model.UserModel;
 import org.restaurante.msusuarios.domain.spi.IRolePersistencePort;
 import org.restaurante.msusuarios.domain.spi.IUserPersistencePort;
 
+import static org.restaurante.msusuarios.domain.util.Constants.CLIENT;
+
 public class ClientUseCase implements IClientServicePort {
 
     private final IUserPersistencePort userPersistencePort;
@@ -20,7 +22,7 @@ public class ClientUseCase implements IClientServicePort {
 
     @Override
     public void saveClient(UserModel userModel) {
-        userModel.setRoleId(rolePersistencePort.getRole("CLIENT").getId());
+        userModel.setRoleId(rolePersistencePort.getRole(CLIENT).getId());
         userModel.setPassword(passwordEncodedServicePort.encryptPassword(userModel.getPassword()));
 
         userPersistencePort.createUser(userModel);
@@ -28,6 +30,6 @@ public class ClientUseCase implements IClientServicePort {
 
     @Override
     public UserModel getClient(Long userId) {
-        return userPersistencePort.getUser(userId, rolePersistencePort.getRole("CLIENT").getId());
+        return userPersistencePort.getUser(userId, rolePersistencePort.getRole(CLIENT).getId());
     }
 }

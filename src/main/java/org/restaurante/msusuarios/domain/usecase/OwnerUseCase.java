@@ -6,6 +6,8 @@ import org.restaurante.msusuarios.domain.model.UserModel;
 import org.restaurante.msusuarios.domain.spi.IRolePersistencePort;
 import org.restaurante.msusuarios.domain.spi.IUserPersistencePort;
 
+import static org.restaurante.msusuarios.domain.util.Constants.EMPLOYEE;
+
 public class OwnerUseCase implements IOwnerServicePort {
 
     private final IUserPersistencePort userPersistencePort;
@@ -21,7 +23,7 @@ public class OwnerUseCase implements IOwnerServicePort {
     @Override
     public void saveEmployee(UserModel user) {
 
-        user.setRoleId(rolePersistencePort.getRole("EMPLOYEE").getId());
+        user.setRoleId(rolePersistencePort.getRole(EMPLOYEE).getId());
         user.setPassword(passwordEncodedServicePort.encryptPassword(user.getPassword()));
 
         userPersistencePort.createUser(user);

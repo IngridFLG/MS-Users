@@ -9,27 +9,29 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 
+import static org.restaurante.msusuarios.application.util.Constants.*;
+
 @Getter
 @Setter
 public class OwnerRequestDto {
 
-    @NotBlank(message = "The name is required")
+    @NotBlank(message = NAME_REQUIRED)
     private String name;
 
-    @NotBlank(message = "The lastname is required")
+    @NotBlank(message = LAST_NAME_REQUIRED)
     private String lastname;
 
     @NotNull
     private Integer dni;
 
-    @Email(message = "The email is not valid")
+    @Email(message = EMAIL_VALID)
     private String email;
 
-    @NotBlank(message = "The password is required")
+    @NotBlank(message = PASSWORD_REQUIRED)
     private String password;
 
     @NotBlank
-    @Pattern(regexp = "^\\+?57\\s?(3[0-2]|7[0-1])\\d{8}$", message = "The number phone is not valid")
+    @Pattern(regexp = PHONE_VALIDATION, message = PHONE_VALIDATION_MESSAGE)
     private String phone;
 
     private Date dateOfBirth;

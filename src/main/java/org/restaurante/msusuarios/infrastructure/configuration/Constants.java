@@ -11,4 +11,8 @@ public class Constants {
     public static final Long CLIENT_ROLE_ID = 3L;
     public static final Long EMPLOYEE_ROLE_ID = 4L;
 
+
+    //MENSAJES
+    public static final String EMAIL_MESSAGE = "El usuario ya esta registrado";
+
 }

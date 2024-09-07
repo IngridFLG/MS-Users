@@ -29,7 +29,7 @@ public class UserJpaAdapter implements IUserPersistencePort{
             throw new ExistsEmailException();
         }
 
-        if(userRepository.findUserEntityByDni(user.getDni()).isPresent()) {
+        if(userRepository.findUserEntityByDni(user.getDni()).isPresent()) { //Las validaciones son mejores en el dominio
             throw new ExistsUserException();
         }
         userRepository.save(userEntityMapper.toUserEntity(user));

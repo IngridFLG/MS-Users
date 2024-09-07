@@ -11,28 +11,24 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-
-
     @ExceptionHandler({Exception.class})
     public ResponseEntity<Object> handleException(Exception ex){
-
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
     }
 
-
     @ExceptionHandler({IsOlderUserException.class})
     public ResponseEntity<Object> isOlderHandleException(IsOlderUserException ex){
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El usuario debe ser mayor de edad");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
     @ExceptionHandler({ExistsEmailException.class})
     public ResponseEntity<Object> existsEmailHandleException(ExistsEmailException ex){
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El email ya esta registrado");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
     @ExceptionHandler({ExistsUserException.class})
     public ResponseEntity<Object> existsUserHandleException(ExistsUserException ex){
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El usuario ya esta registrado");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
     @ExceptionHandler({UserNotFoundException.class})
